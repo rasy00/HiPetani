@@ -1,10 +1,7 @@
 package com.config;
-import java.rmi.Remote;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.collections.Question;
 import com.collections.User;
 
@@ -81,6 +78,7 @@ public class Getter {
 																	"FROM `pertanyaan` JOIN `member` ON `pertanyaan`.`author` = `member`.`id` "+
 																	"JOIN `kontrakKategori` ON `kontrakKategori`.`pertanyaan` = `pertanyaan`.`id` "+
 			 /*pemindahan data*/									"JOIN `kategori` ON `kategori`.`id` = `kontrakKategori`.`kategori`");
+			int index = 0;
 			while (resultData.next()){
 				String judul =resultData.getString("judul");
 				String body = resultData.getString("body");
@@ -92,38 +90,19 @@ public class Getter {
 				
 				Question data = new Question(like, body, judul, nama, foto, id);
 				data.addKategori(kategori);
-		
-				pertanyaan.add(data);
 				
-			}
-			
-			for(int i = 0;i<pertanyaan.size();i++) {
-				if(pertanyaanFix.size() == 0) {
-					pertanyaanFix.add(pertanyaan.get(i));
-					System.out.println("berhasil tambah");
-				}else {
-					// menghilangkan redudance data
-					for(int j = 0;j<pertanyaanFix.size();j++) {
-						if (pertanyaanFix.get(j).equals(pertanyaan.get(i))){
-							System.out.println("sama");
-							Question result = pertanyaanFix.get(j);
-							for(int a= 0; a<result.kategori.length;a++) {
-								if(result.kategori[a].equals(pertanyaan.get(i).kategori[0])){
-									continue;
-								}else {
-									result.addKategori(pertanyaan.get(i).kategori[0]);
-									pertanyaanFix.set(j, result);
-								}
-							}
-						}else{
-							System.out.println("tidak sama");
-							continue;
-						}
+				// menghapus redudance dalam menampilkan data
+				if(pertanyaan.size() == 0){
+					pertanyaan.add(data);
+				}else{
+					if(pertanyaan.get(index).id != data.id){
+						pertanyaan.add(data);
+						index++;
+					}else if(pertanyaan.get(index) == data.id){
+						pertanyaan.get(index).addKategori(data.kategori[0]);
 					}
-
-				}	
+				}
 			}
-			
 			
 			// tutup conn
 			conn.close();
