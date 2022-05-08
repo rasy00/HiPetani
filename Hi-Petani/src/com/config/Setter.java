@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import com.collections.Question;
+import com.collections.User;
 
 public class Setter {
 	private static Connection conn;
@@ -36,10 +38,10 @@ public class Setter {
 	public static int sendRegistrasi(String username,String password,String nama,String noHp) {
 		a = 0;
 //		checking sudah ada?
-		String [][] daftarUser = NULL // getAllMember();
-		for (String[] user : daftarUser) {
-			if(user[1].toLowerCase().equals(username.toLowerCase())) {
-				a = 2;
+		ArrayList<User> users = Getter.getAllMember();
+		for (User user : users) {
+			if(user.username.toLowerCase().equals(username.toLowerCase())) {
+				a = -55;
 				return a; 
 			}
 		}
@@ -122,10 +124,10 @@ public class Setter {
 		 a = 0;
 		 int like = 0;
 //		checking sudah ada?
-		String [][] questions = Getter.getAllQuestion();
-		for (String[] question : questions) {
-			if(question[6].toLowerCase().equals(String.valueOf(idP))) {
-				like = Integer.parseInt(question[3]);
+		ArrayList<Question> questions = Getter.getAllQuestion();
+		for (Question question : questions) {
+			if(question.idPertanyaan == idP) {
+				like = question.like;
 				break;
 			}
 		}
